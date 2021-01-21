@@ -1,0 +1,145 @@
+clc;
+clear;
+
+obstacle1 = [1 1;1.5 1;1.5 1.5;1,1.5];
+obstacle2 = [-2 0;-1 0;0.15 -0.5;-1 -0.75;-2 -0.75];
+%theta1 = 20;
+%theta2 = 30;
+
+
+x1 = 0;
+y1 = 0;
+ct=1;
+
+
+
+W1 = 1;%half width of link 1
+L1 = 0.1;%half thickness of link 1
+
+W2 = 0.5;%half width of link 2
+L2 = 0.1;%half thickness of link 2
+link1_geometry = [-W1, -L1; W1, -L1; W1, L1; -W1, L1];
+link2_geometry = [-W2, -L2; W2, -L2; W2, L2; -W2, L2];
+for theta1=0:10:360
+    for theta2=0:10:360
+h1=subplot(1,3,1);
+title('RoboWorld');
+
+
+axis([-5 5 -5 5]);
+daspect([1 1 1]);
+grid on;
+hold on
+
+fill(obstacle1(:,1), obstacle1(:,2), 'r');
+fill(obstacle2(:,1), obstacle2(:,2), 'y');
+l1handle = fill(link1_geometry(:,1), link1_geometry(:,2), 'k');
+
+l2handle = fill(link2_geometry(:,1), link2_geometry(:,2), 'k');
+hold off
+
+
+pause(0.001)
+M(ct)=getframe(gcf);
+ct=ct+1;
+hold off
+
+
+%rotate link about origin
+rotated_l1_geometry = link1_geometry*[cosd(theta1) sind(theta1);...
+    -sind(theta1), cosd(theta1)];
+rotated_l2_geometry = link2_geometry*[cosd(theta2+theta1) sind(theta2+theta1);...
+    -sind(theta2+theta1), cosd(theta2+theta1)];
+X1=x1+W1*cosd(theta1);
+Y1=y1+W1*sind(theta1);
+x2 = x1+2*W1*cosd(theta1);
+y2 = y1+2*W1*sind(theta1);
+
+X2=x2+W2*cosd(theta1+theta2);
+Y2=y2+W2*sind(theta1+theta2);
+set(l1handle, 'xdata', X1+rotated_l1_geometry(:,1),...
+    'ydata', Y1+rotated_l1_geometry(:,2));
+
+
+
+set(l2handle, 'xdata', X2+rotated_l2_geometry(:,1),...
+    'ydata', Y2+rotated_l2_geometry(:,2));    
+subplot(1,3,2);
+title('Robo-WorkSpace');
+xlabel('X ') 
+ylabel('Y')
+hold on
+axis([-5 5 -5 5]);
+daspect([1 1 1]);
+grid on;
+scatter(X2,Y2)
+hbase.Visible = 'off';
+
+
+subplot(1,3,3);
+title('C-Space');
+xlabel('θ1(Degree)') 
+ylabel('θ2(Degree)')
+hold on
+axis([0 360 0 360]);
+daspect([1 1 1]);
+grid on;
+
+%Obstacles1=[obstacle1 obstacle2];
+%Obstacles2=[l2handle l1handle];
+%criterion = sum( overlaps(Obstacles1,Obstacles2) ) == 1 ; %true if one and only one obstacle intersected
+%polyout = intersect(l1handle,l2handle);
+%plot(polyout)
+%xlim([-360 360]);
+%ylim([-360 360]);
+%map = binaryOccupancyMap(360,360)
+%collisionStatus = checkCollision(obstacle1,l1handle)
+ %polyout = intersect(obstacle1 , l1handle)
+%area = rectint(obstacle1,l1handle)
+%red color 
+if (X2>0.65) && (X2<1.95) && (Y2>0.78) && (Y2<1.85)
+     
+     scatter(theta1,theta2,[],'r','filled')
+ end
+ if (X1>0.75) && (X1<1.88) && (Y1>0.78) && (Y1<1.85)
+     scatter(theta1,theta2,[],'r','filled')
+ end
+  if (((X2+X1)/2)>0.75) && (((X2+X1)/2)<1.85) && (((Y2+Y1)/2)>0.78) && (((Y2+Y1)/2)<1.85)
+     
+     scatter(theta1,theta2,[],'r','filled')
+ end
+ if ((X1/2)>0.75) && ((X1/2)<1.85) && ((Y1/2)>0.78) && ((Y1/2)<1.85)
+     scatter(theta1,theta2,[],'r','filled')
+ end
+  if ((X1*0.75)>0.55) && ((X1*0.75)<1.95) && ((Y1*0.75)>0.78) && ((Y1*0.75)<1.85)
+     scatter(theta1,theta2,[],'r','filled')
+  end
+  if (((X2+X1)*0.75)>0.75) && (((X2+X1)*0.75)<1.95) && (((Y2+Y1)*0.75)>0.78) && (((Y2+Y1)*0.75)<1.85)
+     scatter(theta1,theta2,[],'r','filled')
+ end
+ %yellow color ---------------------------------------------
+if (X2>-2.4) && (X2<0.20) && (Y2>-0.785) && (Y2<0.28)
+     
+     scatter(theta1,theta2,[],'y','filled')
+ end
+ if (X1>-2.4) && (X1<0.17) && (Y1>-0.785) && (Y1<0.14)
+     scatter(theta1,theta2,[],'y','filled')
+ end
+  if (((X2+X1)/2)>-2.4) && (((X2+X1)/2)<0.17) && (((Y2+Y1)/2)>-0.785) && (((Y2+Y1)/2)<0.19)
+     
+     scatter(theta1,theta2,[],'y','filled')
+ end
+ if ((X1/2)>-2.4) && ((X1/2)<0.17) && ((Y1/2)>-0.785) && ((Y1/2)<0.14)
+     scatter(theta1,theta2,[],'y','filled')
+ end
+  if ((X1*0.75)>-2.4) && ((X1*0.75)<0.17) && ((Y1*0.75)>-0.785) && ((Y1*0.75)<0.18)
+     scatter(theta1,theta2,[],'y','filled')
+  end
+  if (((X2+X1)*0.75)>-2.4) && (((X2+X1)*0.75)<0.17) && (((Y2+Y1)*0.75)>-0.785) && (((Y2+Y1)*0.75)<0.20)
+     scatter(theta1,theta2,[],'y','filled')
+  end
+ 
+    end
+   cla(h1)
+end
+
